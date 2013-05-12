@@ -20,6 +20,7 @@ package net3dprintweb.service.shapeways.materials.action
 	public class ShapewaysMaterialsAction extends ShapewaysBaseAction
 	{
 		private static const FRAGMENT:String = "/materials/v1";
+		private var _isResponse:Boolean = false;
 
 		public function ShapewaysMaterialsAction()
 		{
@@ -27,25 +28,17 @@ package net3dprintweb.service.shapeways.materials.action
 		}
 
 		public function send():void {
-			var authObj:Object = createAuthorization(URLRequestMethod.GET);
-			var authHeadName:String;
-			var authHeadValue:String;
-			for (authHeadName in authObj) {
-				authHeadValue = authObj[authHeadName];
-			}
-			var req:HttpRequest = new Get();
-			req.addHeader(authHeadName, authHeadValue);
-
-			var uri:URI = new URI(getURL());
+			var req:HttpRequest =  createRequest(URLRequestMethod.GET);
 			var client:HttpClient = new HttpClient();
 			client.listener.onData = onData;
-			client.listener.onStatus = onStatus;
-			client.listener.onComplete = onComp;
-			client.listener.onError = onError;
-			client.request(uri, req);
+			request(req);
 		}
 
-		private function onData(event:HttpDataEvent):void {
+		protected override function onData(event:HttpDataEvent):void {
+			if (_isResponse) {
+				_isResponse  = false;
+				return;
+			}
 			var data:String = event.readUTFBytes();
 
 			var materials:Object = toMaterials(data);
@@ -54,14 +47,7 @@ package net3dprintweb.service.shapeways.materials.action
 
 			materialsEvent.materials = materials;
 			dispatchEvent(materialsEvent);
-		}
-
-
-		private function onStatus(event:HttpStatusEvent):void {
-		}
-		private function onComp(event:HttpResponseEvent):void {
-		}
-		private function onError(event:HttpErrorEvent):void {
+			_isResponse = true;
 		}
 
 		protected override function getURL():String {

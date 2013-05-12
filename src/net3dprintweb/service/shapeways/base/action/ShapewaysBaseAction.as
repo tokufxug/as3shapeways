@@ -1,11 +1,13 @@
 package net3dprintweb.service.shapeways.base.action
 {
+	import com.adobe.net.URI;
 	import com.hurlant.crypto.Crypto;
 	import com.hurlant.crypto.hash.HMAC;
 	import com.hurlant.util.Base64;
 	import com.hurlant.util.Hex;
 
 	import flash.events.EventDispatcher;
+	import flash.events.HTTPStatusEvent;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
@@ -15,6 +17,14 @@ package net3dprintweb.service.shapeways.base.action
 	import net3dprintweb.service.shapeways.auth.token.ShapewaysConsumer;
 	import net3dprintweb.service.shapeways.auth.token.ShapewaysOAuthTokenManager;
 
+	import org.httpclient.HttpClient;
+	import org.httpclient.HttpRequest;
+	import org.httpclient.events.HttpDataEvent;
+	import org.httpclient.events.HttpErrorEvent;
+	import org.httpclient.events.HttpResponseEvent;
+	import org.httpclient.events.HttpStatusEvent;
+	import org.httpclient.http.Get;
+	import org.httpclient.http.Post;
 	import org.iotashan.oauth.OAuthConsumer;
 	import org.iotashan.oauth.OAuthRequest;
 	import org.iotashan.oauth.OAuthSignatureMethod_HMAC_SHA1;
@@ -129,6 +139,45 @@ package net3dprintweb.service.shapeways.base.action
 			var ret:Object = new Object();
 			ret.Authorization = authHeader.value; //createSignature(q, consumer.secret, accessToken.secret, URLRequestMethod.POST);
 			return ret;
+		}
+
+		protected function createRequest(mehtod:String):HttpRequest {
+			var authObj:Object = createAuthorization(mehtod);
+			var authHeadName:String;
+			var authHeadValue:String;
+			for (authHeadName in authObj) {
+				authHeadValue = authObj[authHeadName];
+			}
+
+			var req:HttpRequest = null;
+			switch (mehtod) {
+				case URLRequestMethod.GET:
+					req = new Get();
+					break;
+				case URLRequestMethod.POST:
+					req = new Post();
+					break;
+			}
+			req.addHeader(authHeadName, authHeadValue);
+			return req;
+		}
+
+		protected function request(req:HttpRequest):void {
+			var client:HttpClient = new HttpClient();
+			client.listener.onData = onData;
+			client.listener.onStatus = onStatus;
+			client.listener.onComplete = onComp;
+			client.listener.onError = onError;
+			client.request(new URI(getURL()), req);
+		}
+
+		protected function onData(event:HttpDataEvent):void {
+		}
+		protected function onStatus(event:HttpStatusEvent):void {
+		}
+		protected function onComp(event:HttpResponseEvent):void {
+		}
+		protected function onError(event:HttpErrorEvent):void {
 		}
 	}
 }

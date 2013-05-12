@@ -27,40 +27,11 @@ package net3dprintweb.service.shapeways.models.action
 		}
 
 		public function send(data:ByteArray):void {
-			var authObj:Object = createAuthorization(URLRequestMethod.POST);
-			var authHeadName:String;
-			var authHeadValue:String;
-			for (authHeadName in authObj) {
-				authHeadValue = authObj[authHeadName];
-			}
-			var req:HttpRequest = new Post();
-			req.addHeader(authHeadName, authHeadValue);
+
+			var req:HttpRequest = createRequest(URLRequestMethod.POST);
 			req.addHeader("Accept", "application/json");
 			req.body = data;
-
-			var uri:URI = new URI(getURL());
-			var client:HttpClient = new HttpClient();
-			client.listener.onData = onData;
-			client.listener.onStatus = onStatus;
-			client.listener.onComplete = onComp;
-			client.listener.onError = onError;
-			client.request(uri, req);
-		}
-
-		private function onData(event:HttpDataEvent):void {
-			if (event.bytes) {
-				trace(event.readUTFBytes());
-			}
-		}
-		private function onStatus(event:HttpStatusEvent):void {
-			trace(event);
-		}
-		private function onComp(event:HttpResponseEvent):void {
-			//trace(event);
-			trace(event.toString());
-		}
-		private function onError(event:HttpErrorEvent):void {
-			trace(event);
+			request(req);
 		}
 
 		protected override function getURL():String {

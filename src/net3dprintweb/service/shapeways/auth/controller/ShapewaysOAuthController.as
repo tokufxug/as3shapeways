@@ -4,27 +4,20 @@ package net3dprintweb.service.shapeways.auth.controller
 
 	import net3dprintweb.service.shapeways.auth.action.ShapewaysOAuthAccessAction;
 	import net3dprintweb.service.shapeways.auth.action.ShapewaysOAuthRequestAction;
-	import net3dprintweb.service.shapeways.auth.events.ShapewaysOAuthAccessTokenEvent
+	import net3dprintweb.service.shapeways.auth.events.ShapewaysOAuthAccessTokenEvent;
 	import net3dprintweb.service.shapeways.auth.events.ShapewaysOAuthRequestTokenEvent;
 	import net3dprintweb.service.shapeways.auth.token.ShapewaysAccessToken;
 	import net3dprintweb.service.shapeways.auth.token.ShapewaysAuthToken;
 	import net3dprintweb.service.shapeways.auth.token.ShapewaysConsumer;
+	import net3dprintweb.service.shapeways.auth.token.ShapewaysOAuthTokenManager;
 
 	public class ShapewaysOAuthController extends EventDispatcher
 	{
-		private var _accessToken:ShapewaysAccessToken;
 		private var _authToken:ShapewaysAuthToken;
 		private var _consumerToken:ShapewaysConsumer;
 
-		public function ShapewaysOAuthController(
-			consumerKey:String, consumerSecret:String) {
-
-			_consumerToken = new ShapewaysConsumer();
-			_consumerToken.key = consumerKey;
-			_consumerToken.secret = consumerSecret;
-		}
-
-		public function requestAction():void {
+		public function requestAction(consumer:ShapewaysConsumer):void {
+			_consumerToken = consumer;
 			var request:ShapewaysOAuthRequestAction = new ShapewaysOAuthRequestAction();
 			request.addEventListener(ShapewaysOAuthRequestTokenEvent.RESULT,
 					onRequestTokenResultHandler);
@@ -50,7 +43,12 @@ package net3dprintweb.service.shapeways.auth.controller
 
 		private function onAccessTokenResultHandler(
 			event:ShapewaysOAuthAccessTokenEvent):void {
-			_accessToken = event.accessToken;
+
+			ShapewaysOAuthTokenManager.instance.consumer = _consumerToken;
+			ShapewaysOAuthTokenManager.instance.accessToken = event.accessToken;
+
+			_consumerToken = null;
+			_authToken = null;
 
 			var accessEvent:ShapewaysOAuthAccessTokenEvent =
 				new ShapewaysOAuthAccessTokenEvent(ShapewaysOAuthAccessTokenEvent.RESULT);
