@@ -17,11 +17,6 @@ package net3dprintweb.service.shapeways.printers.action
 		private static const FRAGMENT:String = "/printers/v1";
 		private var _isResponse:Boolean = false;
 
-		public function send():void {
-			var req:HttpRequest =  createRequest(URLRequestMethod.GET);
-			request(req);
-		}
-
 		protected  override function onData(event:HttpDataEvent):void {
 			if (_isResponse) {
 				_isResponse  = false;

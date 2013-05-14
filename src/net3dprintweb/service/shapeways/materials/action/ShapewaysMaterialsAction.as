@@ -27,7 +27,7 @@ package net3dprintweb.service.shapeways.materials.action
 			super();
 		}
 
-		public function send():void {
+		public override function doGet():void {
 			var req:HttpRequest =  createRequest(URLRequestMethod.GET);
 			var client:HttpClient = new HttpClient();
 			client.listener.onData = onData;

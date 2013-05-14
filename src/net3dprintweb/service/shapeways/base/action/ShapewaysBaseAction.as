@@ -38,6 +38,11 @@ package net3dprintweb.service.shapeways.base.action
 		{
 		}
 
+		public function doGet():void {
+			var req:HttpRequest =  createRequest(URLRequestMethod.GET);
+			request(req);
+		}
+
 		protected function createQueryObject(query:String):Object {
 
 			var params:Array = query.split('&');
