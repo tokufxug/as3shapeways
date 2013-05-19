@@ -44,7 +44,7 @@ package net3dprintweb.service.shapeways.printers.action
 			do {
 				firstIndex = prtStr.indexOf("{\"printerId\"", lastIndex);
 				lastIndex = prtStr.indexOf("}", lastIndex) + 1;
-				if (lastIndex < firstIndex) {
+				if (firstIndex < 0 || lastIndex < firstIndex) {
 					break;
 				}
 				var data:String = prtStr.substring(firstIndex, lastIndex);

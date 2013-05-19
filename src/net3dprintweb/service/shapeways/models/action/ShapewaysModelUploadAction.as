@@ -26,6 +26,10 @@ package net3dprintweb.service.shapeways.models.action
 			super();
 		}
 
+		public override function doGet():void {
+			throw new Error("Call the function that is not available.");
+		}
+
 		public function send(data:ByteArray):void {
 
 			var req:HttpRequest = createRequest(URLRequestMethod.POST);

@@ -20,7 +20,6 @@ package net3dprintweb.service.shapeways.models.model
 		public var tags:Array;
 		public var defualtMaterialId:int;
 
-
 		public function ShapewaysUploadModel()
 		{
 		}

@@ -62,7 +62,7 @@ package net3dprintweb.service.shapeways.materials.action
 			do {
 				firstIndex = mtlStr.indexOf("{\"materialId\"", lastIndex);
 				lastIndex = mtlStr.indexOf("}", lastIndex) + 1;
-				if (lastIndex < firstIndex) {
+				if (firstIndex < 0 || lastIndex < firstIndex) {
 					break;
 				}
 				var data:String = mtlStr.substring(firstIndex, lastIndex);
