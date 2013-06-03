@@ -1,6 +1,7 @@
 package net3dprintweb.service.shapeways.models.action
 {
 	import net3dprintweb.service.shapeways.base.action.ShapewaysBaseAction;
+	import net3dprintweb.service.shapeways.models.category.ShapewaysCategory;
 	import net3dprintweb.service.shapeways.models.code.ShapewaysModelForSale;
 	import net3dprintweb.service.shapeways.models.code.ShapewaysModelMaterialActiveCode;
 	import net3dprintweb.service.shapeways.models.code.ShapewaysModelPublicCode;
@@ -57,7 +58,21 @@ package net3dprintweb.service.shapeways.models.action
 			modelObj = JSON.parse("{" + data.substring(scrtFirstIndex + 1, nxtActionIndex) + "}");
 			model.secretKey = modelObj.secretKey;
 			model.defaultMaterialId = modelObj.defaultMaterialId;
+			var categories:Object = modelObj.categories;
+			if (categories) {
+				var shapewaysCategorys:Object = new Object();
+				for each (var category:Object in categories) {
 
+					var shapewaysCategory:ShapewaysCategory = new ShapewaysCategory();
+					shapewaysCategory.categoryId = category.categoryId;
+					shapewaysCategory.level = category.level;
+					shapewaysCategory.parentId = category.parentId;
+					shapewaysCategory.title = category.title;
+
+					shapewaysCategorys[category.categoryId] = shapewaysCategory;
+				}
+				model.categories = shapewaysCategorys;
+			}
 			return model;
 		}
 

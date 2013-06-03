@@ -1,7 +1,5 @@
 package net3dprintweb.service.shapeways.models.model
 {
-	import net3dprintweb.service.shapeways.materials.material.ShapewaysMaterial;
-
 	public class ShapewaysModel
 	{
 		public var modelId:String;
@@ -13,6 +11,7 @@ package net3dprintweb.service.shapeways.models.model
 		public var materials:Object;
 		public var secretKey:String;
 		public var defaultMaterialId:String;
+		public var categories:Object;
 		public var action:ShapewaysNextActionSuggestions;
 	}
 }
